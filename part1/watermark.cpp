@@ -259,12 +259,13 @@ int** get_modified_coordinates(const SDoublePlane &input,
 
 
 // Write this in Part 1.3 -- add watermark N to image
-SDoublePlane mark_image(const SDoublePlane &input, int N)
+SDoublePlane mark_image(const SDoublePlane &input,
+                        int N,
+                        int vector_length,
+                        int radius,
+                        int multiplication_constant)
 {
   srand(N);
-  int vector_length = 5;
-  int multiplication_constant = 1;
-  int radius = 100;
 
   SDoublePlane fft_real(input.rows(), input.cols());
   SDoublePlane fft_imag(input.rows(), input.cols());
@@ -306,14 +307,14 @@ SDoublePlane mark_image(const SDoublePlane &input, int N)
 
 
 // Write this in Part 1.3 -- check if watermark N is in image
-void check_image(const SDoublePlane &input, int N)
+void check_image(const SDoublePlane &input,
+                 int N,
+                 int vector_length,
+                 int radius,
+                 float r_check)
 {
-  float r_check = 0.3;
 
   srand(N);
-  int vector_length = 5;
-  int multiplication_constant = 1;
-  int radius = 100;
 
   SDoublePlane fft_real(input.rows(), input.cols());
   SDoublePlane fft_imag(input.rows(), input.cols());
@@ -385,7 +386,7 @@ void check_image(const SDoublePlane &input, int N)
   // Calculate R value
   float r_value = numerator / denominator;
 
-  printf("r_value: %f\n", r_value);
+  //printf("r_value: %f\n", r_value);
 
   if (r_value >= r_check) {
     printf("Image has watermark\n");
@@ -437,6 +438,10 @@ int main(int argc, char **argv)
                                noise_removed,
                                noise_removed);
     } else if(part == "1.3") {
+      int vector_length = 5;
+      int radius = 100;
+      int multiplication_constant = 1; // alpha constant in PDF
+      float r_check = 0.3; // R value cutoff for Pearson correlation, "t" in PDF
 	    
       if(argc < 6) {
 	      cout << "Need 6 parameters for watermark part:" << endl;
@@ -449,13 +454,20 @@ int main(int argc, char **argv)
       string op(argv[4]);
 	    if(op == "add") {
 	      SDoublePlane transformed_image = mark_image(padded_image,
-                                                    seed_number);
+                                                    seed_number,
+                                                    vector_length,
+                                                    radius,
+                                                    multiplication_constant);
         SImageIO::write_png_file(outputFile.c_str(),
                                  transformed_image,
                                  transformed_image,
                                  transformed_image);
 	    } else if(op == "check") {
-	      check_image(padded_image, seed_number);
+	      check_image(padded_image,
+                    seed_number,
+                    vector_length,
+                    radius,
+                    r_check);
 	    } else {
 	      throw string("Bad operation!");
       }
