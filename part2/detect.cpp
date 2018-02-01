@@ -101,10 +101,33 @@ void  write_detection_image(const string &filename, const vector<DetectedBox> &i
 SDoublePlane convolve_separable(const SDoublePlane &input, const SDoublePlane &row_filter, const SDoublePlane &col_filter)
 {
   SDoublePlane output(input.rows(), input.cols());
+  SDoublePlane final_output(input.rows(), input.cols());
 
-  // Convolution code here
-  
-  return output;
+  for (int i = 0; i < input.rows(); i++) {
+    for (int j = 0; j < input.cols(); j++) {
+      for (int k = 0; k < row_filter.cols(); k++) {
+ 
+      // check if inside image boundary, and if so, do the multiplication
+        if (i + row_filter.cols() > input.rows()) {
+          output[i][j] += input[i][j] * row_filter[row_filter.cols() - k - 1][0];
+        }
+      }
+    }
+ }
+     
+  // now convolve output with the column filter
+  for (int l = 0; l < output.rows(); l++) {
+    for (int m = 0; m < output.cols(); m++) {
+      for (int n = 0; n < col_filter.rows(); n++) {
+
+      // check if inside image boundary, and if so, do the multiplication
+        if (l + col_filter.rows() > output.rows()) {
+          final_output[l][m] += output[l][m] * col_filter[col_filter.rows() - n - 1][0];
+        }
+      }
+    }
+  }
+  return final_output;
 }
 
 // Convolve an image with a  convolution kernel
@@ -113,7 +136,19 @@ SDoublePlane convolve_general(const SDoublePlane &input, const SDoublePlane &fil
 {
   SDoublePlane output(input.rows(), input.cols());
 
-  // Convolution code here
+  for (int i = 0; i < input.rows(); i++) {
+    for (int j = 0; j < input.cols(); j++) {
+      for (int k = 0; k < filter.rows(); k++) {
+        for (int m = 0; m < filter.cols(); m++) {
+          
+          // check if inside image boundary, and if so, do the multiplication
+          if ((j + filter.cols() > input.cols()) && (i + filter.rows() > input.rows())) {
+            output[i][j] += input[i][j] * filter[filter.rows() - k - 1][filter.cols() - m - 1];
+          }
+        }
+      }
+    }
+  }
   
   return output;
 }
