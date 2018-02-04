@@ -106,10 +106,11 @@ SDoublePlane convolve_separable(const SDoublePlane &input, const SDoublePlane &r
   for (int i = 0; i < input.rows(); i++) {
     for (int j = 0; j < input.cols(); j++) {
       for (int k = 0; k < row_filter.cols(); k++) {
- 
-      // check if inside image boundary, and if so, do the multiplication
-        if (i + row_filter.cols() <= input.rows()) {
-          output[i][j] += input[i][j] * row_filter[row_filter.cols() - k - 1][0];
+        int i_bound = i + (k - 1/2);
+        int j_bound = j + (k - row_filter.cols() / 2);
+        // check if inside image boundary, and if so, do the multiplication
+        if (i + row_filter.cols() <= input.rows() && i_bound >= 0 && j_bound >= 0) {
+          output[i][j] += input[i_bound][j_bound] * row_filter[row_filter.cols() - k - 1][0];
         }
       }
     }
@@ -119,10 +120,11 @@ SDoublePlane convolve_separable(const SDoublePlane &input, const SDoublePlane &r
   for (int l = 0; l < output.rows(); l++) {
     for (int m = 0; m < output.cols(); m++) {
       for (int n = 0; n < col_filter.rows(); n++) {
-
-      // check if inside image boundary, and if so, do the multiplication
-        if (l + col_filter.rows() <= output.rows()) {
-          final_output[l][m] += output[l][m] * col_filter[col_filter.rows() - n - 1][0];
+        int l_bound = l + (n - 1/2);
+        int m_bound = m + (n - col_filter.rows() / 2);
+        // check if inside image boundary, and if so, do the multiplication
+        if (l + col_filter.rows() <= output.rows() && l_bound >= 0 && m_bound >= 0) {
+          final_output[l][m] += output[l_bound][m_bound] * col_filter[col_filter.rows() - n - 1][0];
         }
       }
     }
