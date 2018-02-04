@@ -50,10 +50,10 @@ void overlay_rectangle(SDoublePlane &input, int _top, int _left, int _bottom, in
       
     // draw top and bottom lines
     for(int j=left; j<=right; j++)
-	  input[top][j] = input[bottom][j] = graylevel;
+    input[top][j] = input[bottom][j] = graylevel;
     // draw left and right lines
     for(int i=top; i<=bottom; i++)
-	  input[i][left] = input[i][right] = graylevel;
+    input[i][left] = input[i][right] = graylevel;
   }
 }
 
@@ -84,12 +84,11 @@ void  write_detection_image(const string &filename, const vector<DetectedBox> &i
     {
       output_planes[p] = input;
       for(vector<DetectedBox>::const_iterator s=ics.begin(); s != ics.end(); ++s)
-	overlay_rectangle(output_planes[p], s->row, s->col, s->row+s->height-1, s->col+s->width-1, p==2?255:0, 2);
+  overlay_rectangle(output_planes[p], s->row, s->col, s->row+s->height-1, s->col+s->width-1, p==2?255:0, 2);
     }
 
   SImageIO::write_png_file(filename.c_str(), output_planes[0], output_planes[1], output_planes[2]);
 }
-
 
 
 // The rest of these functions are incomplete. These are just suggestions to 
@@ -180,6 +179,208 @@ SDoublePlane find_edges(const SDoublePlane &input, double thresh=0)
   // use your sobel gradient operator to compute the gradient magnitude and threshold
   
   return output;
+}
+
+
+
+// Filter out everything that isn't "gray" enough
+SDoublePlane color_filter(const SDoublePlane &red_plane,
+                          const SDoublePlane &green_plane,
+                          const SDoublePlane &blue_plane,
+                          const SDoublePlane &gray_plane)
+{
+  SDoublePlane filtered_plane(gray_plane.rows(), gray_plane.cols());
+
+  double min, max;
+
+  for (int row = 0; row < red_plane.rows(); row++) {
+    for (int col = 0; col < red_plane.cols(); col++) {
+
+      if (red_plane[row][col] < green_plane[row][col]) {
+        min = red_plane[row][col];
+      } else {
+        min = green_plane[row][col];
+      }
+
+      if (blue_plane[row][col] < min) {
+        min = blue_plane[row][col];
+      }
+
+      if (red_plane[row][col] > green_plane[row][col]) {
+        max = red_plane[row][col];
+      } else {
+        max = green_plane[row][col];
+      }
+
+      if (blue_plane[row][col] > max) {
+        max = blue_plane[row][col];
+      }
+
+      if ((max - min < 25.0) &&
+          (red_plane[row][col] < 130.0) &&
+          (green_plane[row][col] < 130.0) &&
+          (blue_plane[row][col] < 130.0)) {
+
+        filtered_plane[row][col] = gray_plane[row][col];
+      } else {
+        filtered_plane[row][col] = 200.0;
+      }
+      
+    }
+  }
+
+  return filtered_plane;
+
+}
+
+
+
+int is_core_point(const SDoublePlane &gray_plane, int ref_row, int ref_col)
+{
+  int surrounding_points = 0;
+
+  for (int row = ref_row - 1; row < ref_row + 2; row++) {
+    for (int col = ref_col - 1; col < ref_col + 2; col++) {
+      if (row == col) {
+        continue;
+      } else if (gray_plane[row][col] != 200.0) {
+        surrounding_points++;
+      }
+    }
+  }
+
+  if (surrounding_points >= 8) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+
+int is_semi_core_point(const SDoublePlane &core_points, int ref_row, int ref_col)
+{
+  int surrounding_points = 0;
+
+  for (int row = ref_row - 1; row < ref_row + 2; row++) {
+    for (int col = ref_col - 1; col < ref_col + 2; col++) {
+      if (row == col) {
+        continue;
+      } else if (core_points[row][col] != 200.0) {
+        surrounding_points++;
+      }
+    }
+  }
+
+  if (surrounding_points >= 5) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+
+int is_edge_point(const SDoublePlane &core_points, int ref_row, int ref_col)
+{
+
+  int surrounding_points = 0;
+
+  for (int row = ref_row - 1; row < ref_row + 2; row++) {
+    for (int col = ref_col - 1; col < ref_col + 2; col++) {
+      if (core_points[row][col] != 200.0) {
+        surrounding_points++;
+      }
+    }
+  }
+
+  if (surrounding_points >= 1) {
+    return 1;
+  } else {
+    return 0;
+  }
+
+}
+
+
+
+// Find "clusters" of points
+SDoublePlane cluster_filter(const SDoublePlane &gray_plane)
+{
+  SDoublePlane core_points(gray_plane.rows(), gray_plane.cols());
+
+  for (int row = 1; row < gray_plane.rows() - 1; row++) {
+    for (int col = 1; col < gray_plane.cols() - 1; col++) {
+      if ((gray_plane[row][col] != 200.0) &&
+          (is_core_point(gray_plane, row, col))) {
+        core_points[row][col] = 0.0;
+      } else {
+        core_points[row][col] = 200.0;
+      }
+
+    }
+  }
+
+  /*
+  int continue_search = 0;
+
+  while (1) {
+
+    for (int row = 1; row < gray_plane.rows() - 1; row++) {
+      for (int col = 1; col < gray_plane.cols() - 1; col++) {
+        if (core_points[row][col] != 0.0 &&
+            is_semi_core_point(core_points, row, col)) {
+          continue_search = 1;
+          core_points[row][col] = 0.0;
+        }
+
+      }
+    }
+
+
+    if (continue_search) {
+      continue_search = 0;
+    } else {
+      break;
+    }
+
+  }
+
+  SImageIO::write_png_file("semi_core_points.png",
+                           core_points,
+                           core_points,
+                           core_points);
+  exit(0);
+  */
+
+
+  SDoublePlane edge_points(gray_plane.rows(), gray_plane.cols());
+
+  for (int row = 1; row < gray_plane.rows() - 1; row++) {
+    for (int col = 1; col < gray_plane.cols() - 1; col++) {
+      if ((gray_plane[row][col] != 200.0) && 
+          (is_edge_point(core_points, row, col))) {
+        edge_points[row][col] = 0.0;
+      } else {
+        edge_points[row][col] = 200.0;
+      }
+
+    }
+  }
+
+
+  for (int row = 1; row < gray_plane.rows() - 1; row++) {
+    for (int col = 1; col < gray_plane.cols() - 1; col++) {
+      if (edge_points[row][col] != 200.0) {
+        core_points[row][col] = 0.0;
+      }
+
+    }
+  }
+
+
+  return core_points;
+
 }
 
 
