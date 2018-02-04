@@ -110,7 +110,7 @@ SDoublePlane convolve_separable(const SDoublePlane &input, const SDoublePlane &r
         int j_bound = j + (k - row_filter.cols() / 2);
         // check if inside image boundary, and if so, do the multiplication
         if (i + row_filter.cols() <= input.rows() && i_bound >= 0 && j_bound >= 0) {
-          output[i][j] += input[i_bound][j_bound] * row_filter[row_filter.cols() - k - 1][0];
+          output[i][j] += input[i_bound][j_bound] * row_filter[k][0];
         }
       }
     }
@@ -124,7 +124,7 @@ SDoublePlane convolve_separable(const SDoublePlane &input, const SDoublePlane &r
         int m_bound = m + (n - col_filter.rows() / 2);
         // check if inside image boundary, and if so, do the multiplication
         if (l + col_filter.rows() <= output.rows() && l_bound >= 0 && m_bound >= 0) {
-          final_output[l][m] += output[l_bound][m_bound] * col_filter[col_filter.rows() - n - 1][0];
+          final_output[l][m] += output[l_bound][m_bound] * col_filter[n][0];
         }
       }
     }
@@ -147,7 +147,7 @@ SDoublePlane convolve_general(const SDoublePlane &input, const SDoublePlane &fil
 
           // check if inside image boundary, and if so, do the multiplication
           if ((j + filter.cols() <= input.cols()) && (i + filter.rows() <= input.rows()) && i_bound >= 0 && j_bound >= 0) {
-            output[i][j] += input[i_bound][j_bound] * filter[filter.rows() - k - 1][filter.cols() - m - 1];
+            output[i][j] += input[i_bound][j_bound] * filter[k][m];
           }
         }
       }
@@ -189,13 +189,14 @@ SDoublePlane find_edges(const SDoublePlane &input, double thresh=0)
 //
 int main(int argc, char *argv[])
 {
-  if(!(argc == 2))
+  if(!(argc == 3))
     {
-      cerr << "usage: " << argv[0] << " input_image" << endl;
+      cerr << "usage: " << argv[0] << " input_image output_image" << endl;
       return 1;
     }
 
   string input_filename(argv[1]);
+  string output_filename(argv[2]);
   SDoublePlane input_image= SImageIO::read_png_file(input_filename.c_str());
   
   // test step 2 by applying mean filters to the input image
@@ -204,10 +205,24 @@ int main(int argc, char *argv[])
     for(int j=0; j<3; j++)
       mean_filter[i][j] = 1/9.0;
   SDoublePlane output_image = convolve_general(input_image, mean_filter);
+  //SImageIO::write_png_file(output_filename.c_str(), output_image, output_image, output_image);
 
+  // test separable
+  SDoublePlane new_row_filter(3, 3);
+  new_row_filter[0][0] = 1;
+  new_row_filter[0][1] = 2;
+  new_row_filter[0][2] = 1;
+
+  SDoublePlane new_col_filter(3, 3); 
+  new_col_filter[0][0] = 1;
+  new_col_filter[2][0] = -1; 
+
+  SDoublePlane output_image_2 = convolve_separable(input_image, new_row_filter, new_col_filter);
+  SImageIO::write_png_file(output_filename.c_str(), output_image_2, output_image_2, output_image_2);
   
   // randomly generate some detected ics -- you'll want to replace this
   //  with your ic detection code obviously!
+  /*
   vector<DetectedBox> ics;
   for(int i=0; i<10; i++)
     {
@@ -222,4 +237,5 @@ int main(int argc, char *argv[])
 
   write_detection_txt("detected.txt", ics);
   write_detection_image("detected.png", ics, input_image);
+  */
 }
