@@ -20,20 +20,23 @@ For 1.2, we hard-coded the removal of the noise (allowable by the assignment), b
 For 1.3, below is a summary (both qualitative and quantitative) of the parameters (**l**, **r**, **alpha** and **t**) we chose.  
 #### Qualitative (Example Images)
 ##### Original Image (Tree):
-<img src="https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_original.png" alt="Drawing" style="width: 256px; height: 256px;"/>
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_original.png)
 
 ##### For high value of l:
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_high_l_value.png)
 
 ##### For low value of r:
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_low_r_value.png)
 
 ##### For high value of alpha:
-
-##### For high value of t:
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_high_alpha_value.png)
 
 One other important assumption that we make with this specific set of parameters is that the png images that are used do not have transparent backgrounds. See an example below.
 ##### Original Image (person - with transparent background):
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/people.png)
 
 ##### For set of parameters above (l = 5, r = 40, alpha = 2, t = 0):
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/people_watermark.png)
 
 #### Quantitative (100 Test Watermarks)
 Here are the results of embedding the watermark 35 into the tree image above using the "add" operation, then testing all integers 1-100 with the "check" operation.
