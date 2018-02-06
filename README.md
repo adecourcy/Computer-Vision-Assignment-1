@@ -20,7 +20,7 @@ For 1.2, we hard-coded the removal of the noise (allowable by the assignment), b
 For 1.3, below is a summary (both qualitative and quantitative) of the parameters (**l**, **r**, **alpha** and **t**) we chose.  
 #### Qualitative (Example Images)
 ##### Original Image (Tree):
-
+![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_original.png)  
 
 ##### For high value of l:
 
