@@ -21,6 +21,7 @@ For 1.3, below is a summary (both qualitative and quantitative) of the parameter
 #### Qualitative (Example Images)
 ##### Original Image (Tree):
 
+
 ##### For high value of l:
 
 ##### For low value of r:
