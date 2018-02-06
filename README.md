@@ -31,6 +31,9 @@ For 1.3, below is a summary (both qualitative and quantitative) of the parameter
 
 One other important assumption that we make with this specific set of parameters is that the png images that are used do not have transparent backgrounds. See an example below.
 ##### For image with transparent background:
+
+#### Quantitative (100 Test Watermarks)
+Here are the results of embedding the watermark 35 into the tree image above using the "add" operation, then testing all integers 1-100 with the "check" operation.
   
 ## Part 2
 ### How to Run
