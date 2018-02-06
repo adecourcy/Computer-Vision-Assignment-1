@@ -1,4 +1,5 @@
 # A1 Report
+#### Alex DeCourcy (adecourc) and Katie Spoon (kspoon)  
 ## Part 1
 ### How to Run
 For 1.1 run "p2 1.1 inputfile outputfile"  
