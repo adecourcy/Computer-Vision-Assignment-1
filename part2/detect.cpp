@@ -672,7 +672,7 @@ vector<DetectedBox> check_if_box(SDoublePlane &filled_mat,
   printf("%d\n", right_col_index);
   */
 
-  float min_percent_filled = 0.8;
+  float min_percent_filled = 0.7;
   int max_proportion = 4; // max proportion (to 1) of height:width or width:height
 
   int filled = 0;
@@ -701,7 +701,7 @@ vector<DetectedBox> check_if_box(SDoublePlane &filled_mat,
   
   // check size of box and dimensions (proportion of height to width)
   int image_area = filled_mat.rows() * filled_mat.cols();
-  int min_size = 40;
+  int min_size = 450;
   int max_size = image_area / 4;
   if (shape_area > max_size ||
       shape_area < min_size ||
