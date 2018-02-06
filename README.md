@@ -19,7 +19,7 @@ For 1.2, we hard-coded the removal of the noise (allowable by the assignment), b
 
 For 1.3, below is a summary (both qualitative and quantitative) of the parameters (**l**, **r**, **alpha** and **t**) we chose.  
 #### Qualitative (Example Images)
-##### Original Image:
+##### Original Image (Tree):
 
 ##### For high value of l:
 
@@ -30,7 +30,9 @@ For 1.3, below is a summary (both qualitative and quantitative) of the parameter
 ##### For high value of t:
 
 One other important assumption that we make with this specific set of parameters is that the png images that are used do not have transparent backgrounds. See an example below.
-##### For image with transparent background:
+##### Original Image (person - with transparent background):
+
+##### For set of parameters above (l = 5, r = 40, alpha = 2, t = 0):
 
 #### Quantitative (100 Test Watermarks)
 Here are the results of embedding the watermark 35 into the tree image above using the "add" operation, then testing all integers 1-100 with the "check" operation.
