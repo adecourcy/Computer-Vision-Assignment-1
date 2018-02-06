@@ -14,7 +14,7 @@ We used several "magic" parameters in part 1.3, including **l** (number of binar
 * **t = 0**: we found that the threshold needed to be very low in order to detect the watermark. By setting it to be 0, we had some concerns that our program would start detecting watermarks that weren't there (false positives), however that was not the case, so we decided on a threshold of 0.
 
 ### Performance Evaluation
-
+  
 ## Part 2
 ### How to Run
 
