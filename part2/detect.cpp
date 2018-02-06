@@ -383,6 +383,42 @@ SDoublePlane cluster_filter(const SDoublePlane &gray_plane)
 
 }
 
+// check if a cluster is a box
+// 3 conditions
+// 1) cluster is > min% filled 2) cluster size relative to image size 3) proportion of height to width is lower than a threshold
+bool check_if_box(SDoublePlane &input, SDoublePlane &filled_mat, int top_row_index, int bot_row_index, int top_col_index, int bot_col_index) {
+  bool is_box = true;
+  int min_percent_filled = 0.8;
+  int max_proportion = 4;	// max proportion (to 1) of height:width or width:height
+
+  int filled = 0;
+  int shape_height = abs(top_row_index - bot_row_index);
+  int shape_width = abs(top_col_index - bot_col_index);
+
+  // check how "filled" the filled matrix is (enough to be a square?)
+  for(int i = 0; i < shape_height; i++) {
+    for(int j = 0; j < shape_width; j++) {
+      if(filled_mat[i][j] != 0) {
+        filled += 1;
+      }
+    }
+  }
+  int shape_area = shape_height * shape_width;
+  int percent_filled = filled / shape_area;
+  if (percent_filled < min_percent_filled) {
+    is_box = false;
+  }
+  
+  // check size of box and dimensions (proportion of height to width)
+  int image_area = input.rows() * input.cols();
+  int min_size = 1;
+  int max_size = image_area / 2;
+  if (shape_area > max_size || shape_area < min_size || shape_height > max_proportion * shape_width || shape_width > max_proportion * shape_height) {
+    is_box = false;
+  }
+  return is_box;
+} 
+
 
 //
 // This main file just outputs a few test images. You'll want to change it to do 
@@ -420,7 +456,7 @@ int main(int argc, char *argv[])
 
   SDoublePlane output_image_2 = convolve_separable(input_image, new_row_filter, new_col_filter);
   SImageIO::write_png_file(output_filename.c_str(), output_image_2, output_image_2, output_image_2);
-  
+
   // randomly generate some detected ics -- you'll want to replace this
   //  with your ic detection code obviously!
   /*
