@@ -53,30 +53,6 @@ SDoublePlane create_padded_image(const SDoublePlane &image)
 {
   int numRows = image.rows();
   int numCols = image.cols();
-  
-  // check if rows and cols are powers of 2 and if not, add extra rows/cols filled with 0s
-  bool row_power_of_two = ceil(log2(numRows)) == floor(log2(numRows));
-  bool col_power_of_two = ceil(log2(numCols)) == floor(log2(numCols));
-  
-  SDoublePlane paddedImage(numRows, numCols);
-
-  if (!row_power_of_two) {
-    int more_rows = pow(ceil(log2(numRows)), 2) - numRows;
-    for (int row = image.rows(); row < more_rows; row++) {
-      for (int col = 0; col < numCols; col++) {
-        paddedImage[row][col] = 0;
-      }
-    }
-  }
-
-  if (!col_power_of_two) {
-    int more_cols = pow(ceil(log2(numCols)), 2) - numCols;
-    for (int row = 0; row < numRows; row++) {
-      for (int col = image.cols(); col < more_cols; col++) {
-        paddedImage[row][col] = 0;
-      }
-    }
-  }
 
   // check if numRows = numCols and if not, add extra row/cols filled with 0s  
   if (numRows > numCols) {
@@ -84,6 +60,11 @@ SDoublePlane create_padded_image(const SDoublePlane &image)
   } else if (numCols > numRows) {
     numRows = numCols;
   }
+  // adjust image size to be a power of 2
+  int adjusted_size = (int) pow(2, ceil(log2(numRows)));
+  numRows = numCols = adjusted_size;
+
+  SDoublePlane paddedImage(numRows, numCols);
 
   for (int row = 0; row < image.rows(); row++) {
     for (int col = 0; col < image.cols(); col++) {
@@ -426,9 +407,9 @@ int main(int argc, char **argv)
   try {
 
     if(argc < 4) {
-	    cout << "Insufficent number of arguments; correct usage:" << endl;
-	    cout << "    p2 problemID inputfile outputfile" << endl;
-	    return -1;
+      cout << "Insufficent number of arguments; correct usage:" << endl;
+      cout << "    p2 problemID inputfile outputfile" << endl;
+      return -1;
     }
     
     string part = argv[1];
@@ -448,7 +429,7 @@ int main(int argc, char **argv)
 
       fft(padded_image, fft_real, fft_imag);
 
-	    SDoublePlane magnitude_matrix = fft_magnitude(fft_real, fft_imag);
+      SDoublePlane magnitude_matrix = fft_magnitude(fft_real, fft_imag);
       SImageIO::write_png_file(outputFile.c_str(),
                                magnitude_matrix,
                                magnitude_matrix,
@@ -465,18 +446,18 @@ int main(int argc, char **argv)
       int radius = 100;
       int multiplication_constant = 1; // alpha constant in PDF
       float r_check = 0.3; // R value cutoff for Pearson correlation, "t" in PDF
-	    
+      
       if(argc < 6) {
-	      cout << "Need 6 parameters for watermark part:" << endl;
-	      cout << "    p2 1.3 inputfile outputfile operation N" << endl;
-	      return -1;
-	    }
+        cout << "Need 6 parameters for watermark part:" << endl;
+        cout << "    p2 1.3 inputfile outputfile operation N" << endl;
+        return -1;
+      }
 
       int seed_number = strtol(argv[5], NULL, 10);
-	   
+     
       string op = argv[4];
-	    if(op == "add") {
-	      SDoublePlane transformed_image = mark_image(padded_image,
+      if(op == "add") {
+        SDoublePlane transformed_image = mark_image(padded_image,
                                                     seed_number,
                                                     vector_length,
                                                     radius,
@@ -485,17 +466,17 @@ int main(int argc, char **argv)
                                  transformed_image,
                                  transformed_image,
                                  transformed_image);
-	    } else if(op == "check") {
-	      check_image(padded_image,
+      } else if(op == "check") {
+        check_image(padded_image,
                     seed_number,
                     vector_length,
                     radius,
                     r_check);
-	    } else {
-	      throw string("Bad operation!");
+      } else {
+        throw string("Bad operation!");
       }
        
-	     int N = atoi(argv[5]);
+       int N = atoi(argv[5]);
     } else {
       throw string("Bad part!");
     }
@@ -505,11 +486,3 @@ int main(int argc, char **argv)
     cerr << "Error: " << err << endl;
   }
 }
-
-
-
-
-
-
-
-
