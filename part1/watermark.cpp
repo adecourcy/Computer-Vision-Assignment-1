@@ -53,14 +53,37 @@ SDoublePlane create_padded_image(const SDoublePlane &image)
 {
   int numRows = image.rows();
   int numCols = image.cols();
+  
+  // check if rows and cols are powers of 2 and if not, add extra rows/cols filled with 0s
+  bool row_power_of_two = ceil(log2(numRows)) == floor(log2(numRows));
+  bool col_power_of_two = ceil(log2(numCols)) == floor(log2(numCols));
+  
+  SDoublePlane paddedImage(numRows, numCols);
 
+  if (!row_power_of_two) {
+    int more_rows = pow(ceil(log2(numRows)), 2) - numRows;
+    for (int row = image.rows(); row < more_rows; row++) {
+      for (int col = 0; col < numCols; col++) {
+        paddedImage[row][col] = 0;
+      }
+    }
+  }
+
+  if (!col_power_of_two) {
+    int more_cols = pow(ceil(log2(numCols)), 2) - numCols;
+    for (int row = 0; row < numRows; row++) {
+      for (int col = image.cols(); col < more_cols; col++) {
+        paddedImage[row][col] = 0;
+      }
+    }
+  }
+
+  // check if numRows = numCols and if not, add extra row/cols filled with 0s  
   if (numRows > numCols) {
     numCols = numRows;
   } else if (numCols > numRows) {
     numRows = numCols;
   }
-
-  SDoublePlane paddedImage(numRows, numCols);
 
   for (int row = 0; row < image.rows(); row++) {
     for (int col = 0; col < image.cols(); col++) {
@@ -68,8 +91,8 @@ SDoublePlane create_padded_image(const SDoublePlane &image)
     }
   }
 
-  for (int row = image.rows(); row < image.rows(); row++) {
-    for (int col = image.cols(); col < image.cols(); col++) {
+  for (int row = image.rows(); row < numRows; row++) {
+    for (int col = image.cols(); col < numCols; col++) {
       paddedImage[row][col] = 0;
     }
   }
@@ -451,14 +474,14 @@ int main(int argc, char **argv)
 
       int seed_number = strtol(argv[5], NULL, 10);
 	   
-      string op(argv[4]);
+      string op = argv[4];
 	    if(op == "add") {
 	      SDoublePlane transformed_image = mark_image(padded_image,
                                                     seed_number,
                                                     vector_length,
                                                     radius,
                                                     multiplication_constant);
-        SImageIO::write_png_file(outputFile.c_str(),
+              SImageIO::write_png_file(outputFile.c_str(),
                                  transformed_image,
                                  transformed_image,
                                  transformed_image);
