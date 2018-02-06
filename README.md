@@ -1,4 +1,4 @@
-# Report
+# A1 Report
 ## Part 1
 ### How to Run
 For 1.1 run "p2 1.1 inputfile outputfile"  
