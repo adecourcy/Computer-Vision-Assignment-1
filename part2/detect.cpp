@@ -3,9 +3,8 @@
 //
 // Based on skeleton code by D. Crandall, Spring 2018
 //
-// PUT YOUR NAMES HERE
-//
-//
+// Katherine Spoon
+// Alex DeCourcy
 
 #include <SImage.h>
 #include <SImageIO.h>
@@ -58,7 +57,7 @@ void overlay_rectangle(SDoublePlane &input, int _top, int _left, int _bottom, in
 }
 
 // DetectedBox class may be helpful!
-//  Feel free to modify.
+// Feel free to modify.
 //
 class DetectedBox {
 public:
@@ -92,13 +91,7 @@ void  write_detection_image(const string &filename,
   SImageIO::write_png_file(filename.c_str(), output_planes[0], output_planes[1], output_planes[2]);
 }
 
-
-// The rest of these functions are incomplete. These are just suggestions to 
-// get you started -- feel free to add extra functions, change function
-// parameters, etc.
-
 // Convolve an image with a separable convolution kernel
-//
 SDoublePlane convolve_separable(const SDoublePlane &input,
                                 const SDoublePlane &row_filter,
                                 const SDoublePlane &col_filter)
@@ -136,7 +129,6 @@ SDoublePlane convolve_separable(const SDoublePlane &input,
 }
 
 // Convolve an image with a  convolution kernel
-//
 SDoublePlane convolve_general(const SDoublePlane &input, const SDoublePlane &filter)
 {
   SDoublePlane output(input.rows(), input.cols());
@@ -164,8 +156,6 @@ SDoublePlane convolve_general(const SDoublePlane &input, const SDoublePlane &fil
   
   return output;
 }
-
-
 
 // Filter out everything that isn't "gray" enough
 SDoublePlane color_filter(const SDoublePlane &red_plane,
@@ -221,7 +211,6 @@ SDoublePlane color_filter(const SDoublePlane &red_plane,
 
 }
 
-
 // check if a point is an core point. Refer to cluster_filter
 int is_core_point(const SDoublePlane &gray_plane, int ref_row, int ref_col)
 {
@@ -243,7 +232,6 @@ int is_core_point(const SDoublePlane &gray_plane, int ref_row, int ref_col)
     return 0;
   }
 }
-
 
 // check if a point is an edge point. Refer to cluster_filter
 int is_edge_point(const SDoublePlane &core_points, int ref_row, int ref_col)
@@ -267,8 +255,6 @@ int is_edge_point(const SDoublePlane &core_points, int ref_row, int ref_col)
 
 }
 
-
-
 // Find "clusters" of points using a simplified version of DBScan
 SDoublePlane cluster_filter(const SDoublePlane &gray_plane)
 {
@@ -290,7 +276,6 @@ SDoublePlane cluster_filter(const SDoublePlane &gray_plane)
 
     }
   }
-
 
   SDoublePlane edge_points(gray_plane.rows(), gray_plane.cols());
   // If a point is next to at least 1 core point, it is an edge point
@@ -314,11 +299,8 @@ SDoublePlane cluster_filter(const SDoublePlane &gray_plane)
     }
   }
 
-
   return core_points;
-
 }
-
 
 // The two functions below expand the line by a certain amount in both directions
 int get_adjusted_line_start(int start,
@@ -335,8 +317,6 @@ int get_adjusted_line_start(int start,
   }
 }
 
-
-
 int get_adjusted_line_end(int end,
                           int line_length,
                           float extend_by,
@@ -351,8 +331,6 @@ int get_adjusted_line_end(int end,
     return new_end;
   }
 }
-
-
 
 // Refer to check_if_horz_line for comments
 int check_if_vert_line(const SDoublePlane &vert_edges,
@@ -399,8 +377,6 @@ int check_if_vert_line(const SDoublePlane &vert_edges,
   return total_pixels + start_row;
 
 }
-
-
 
 // Refer to the find_horz_lines function for comments
 SDoublePlane find_vert_lines(const SDoublePlane &vert_edges,
@@ -455,8 +431,6 @@ SDoublePlane find_vert_lines(const SDoublePlane &vert_edges,
   return vert_lines;
 }
 
-
-
 // Given an edge pixel, check if that pixel is the start of a valid line
 int check_if_horz_line(const SDoublePlane &horz_edges,
                        int start_row,
@@ -507,8 +481,6 @@ int check_if_horz_line(const SDoublePlane &horz_edges,
   return total_pixels + start_col;
 
 }
-
-
 
 // Check for horizontal lines
 SDoublePlane find_horz_lines(const SDoublePlane &horz_edges,
@@ -570,8 +542,6 @@ SDoublePlane find_horz_lines(const SDoublePlane &horz_edges,
   return horz_lines;
 }
 
-
-
 /*
   Find lines in our edge filtered image. Lines are defined by
   consecutive edge points on a minimum length
@@ -590,7 +560,6 @@ SDoublePlane find_lines(const SDoublePlane &filtered_vert,
   */
   float extend_by = 0.10;
   float min_coverage = 0.90;
-
 
   // Find the vertical and horizontal lines
   SDoublePlane vert_lines = 
@@ -629,9 +598,6 @@ SDoublePlane find_lines(const SDoublePlane &filtered_vert,
   return all_lines;
 }
 
-
-
-
 class Point
 {
     public:
@@ -641,7 +607,7 @@ class Point
 
 /*
   check if a cluster is a box
-  3 conditions
+  3 conditions:
   1) cluster is > min% filled
   2) cluster size is small enough relative to image size,
      and large enough in general
@@ -703,8 +669,6 @@ vector<DetectedBox> check_if_box(SDoublePlane &filled_mat,
   return detected_boxes;
 
 } 
-
-
 
 /*
   A basic flood fill algorithm
@@ -788,13 +752,9 @@ void flood_fill(SDoublePlane &line_boundaries,
         new_point.col = col+1;
         add_points.push_back(new_point);
       }
-
-
-
     }
   }
 }
-
 
 /*
   Use a flood fill algorithm to cluster empty spaces in the boundaries
@@ -803,7 +763,6 @@ void flood_fill(SDoublePlane &line_boundaries,
 */
 vector<DetectedBox> flood_fill_cluster(SDoublePlane &line_boundaries)
 {
-
   vector<DetectedBox> detected_boxes;
   int top_row;
   int bottom_row;
@@ -832,7 +791,6 @@ vector<DetectedBox> flood_fill_cluster(SDoublePlane &line_boundaries)
                                       left_col,
                                       right_col);
 
-
       }
     }
   }
@@ -840,12 +798,6 @@ vector<DetectedBox> flood_fill_cluster(SDoublePlane &line_boundaries)
   return detected_boxes;
 }
 
-
-
-//
-// This main file just outputs a few test images. You'll want to change it to do 
-//  something more interesting!
-//
 int main(int argc, char *argv[])
 {
   if(!(argc == 3))
@@ -861,12 +813,9 @@ int main(int argc, char *argv[])
   SDoublePlane green_plane;
   SDoublePlane blue_plane;
 
-
   SDoublePlane gray_plane = SImageIO::read_png_file(input_filename.c_str());
   SImageIO::read_png_file(input_filename.c_str(), red_plane, green_plane, blue_plane);
   
-
-
   // We'll use a very aggressive mean filter to blur at first
   SDoublePlane mean_7_7(7, 7);
   for (int row = 0; row < 7; row++) {
@@ -886,7 +835,6 @@ int main(int argc, char *argv[])
         (1 / (M_PI * 18)) * exp(0 - (((x * x) + (y * y)) / 18));
     }
   }
-
 
   // Blur all colors using the mean filter
   red_plane = convolve_general(red_plane, mean_7_7);
@@ -908,7 +856,6 @@ int main(int argc, char *argv[])
   */
   filtered_plane = cluster_filter(filtered_plane);
 
-
   // Transform the remaining points into a black and white image  
   for (int row = 0; row < filtered_plane.rows(); row++) {
     for (int col = 0; col < filtered_plane.cols(); col++) {
@@ -917,8 +864,6 @@ int main(int argc, char *argv[])
       }
     }
   }
-  
-
   
   SDoublePlane short_vert_edge_filter(3, 3);
 
@@ -929,8 +874,7 @@ int main(int argc, char *argv[])
   short_vert_edge_filter[0][2] = -1.0;
   short_vert_edge_filter[1][2] = -2.0;
   short_vert_edge_filter[2][2] = -1.0;
-
-
+  
 
   SDoublePlane short_horz_edge_filter(3, 3);
 
@@ -963,11 +907,9 @@ int main(int argc, char *argv[])
     }
   }
 
-
   // Apply a gaussing blur to our found edges
   filtered_vert = convolve_general(filtered_vert, gaussian_7_7);
   filtered_horz = convolve_general(filtered_horz, gaussian_7_7);
-
 
   // Find lines in our edges
   SDoublePlane all_lines = find_lines(filtered_vert,
@@ -976,7 +918,6 @@ int main(int argc, char *argv[])
   // Use a flood fill algorithm to find boxes from our edges
   vector<DetectedBox> detected_boxes =
       flood_fill_cluster(all_lines);
-
 
   write_detection_image(output_filename.c_str(),
                         detected_boxes,
