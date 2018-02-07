@@ -52,7 +52,13 @@ We deviated quite a bit from the suggestions in the PDF in this assignment. We f
 
 We were asked on Piazza to compare our method to the suggested method in the PDF, however we found that it would have taken a very large amount of work to get results from the suggested PDF method and it was very obvious that those results would be very poor. As we had already spent a large amount of time trying to improve the results through the use of different blurs and edge filters, we decided to finish the project using our modified method and only report those results here.I
 
-We started by importing the image as a color image. We applied an aggressive blur to each color plane though the use of a mean filter. We then passed these color planes to a function that filtered out any pixel that wasn't "gray" enough given some parameters. This was a very conservative filter, erring on the side of leaving too much noise behind rather than than accidentally removing some signal from that noise. This color filter returned a grayscale image of the remaining pixels.
+We started by importing the image as a color image. We applied an aggressive blur to each color plane though the use of a mean filter. We then passed these color planes to a function that filtered out any pixel that wasn't "gray" enough given some parameters. This was a very conservative filter, erring on the side of leaving too much noise behind rather than than accidentally removing some signal from that noise. Any removed points were turned white. This color filter returned a grayscale image of the remaining pixels.
+
+The remaining pixels were run through a clustering algorithm, which was a very simplified form of DBScan. This algorithm kept any point that was surrounded by all non-white points as a "core" point. It also kept any point that was in direct contact with any "core" point (which were called "edge" points in the code). This helped remove small, isolated patches of gray pixels that were left behind in the color filtering step.
+
+After the clustering step, the image was turned to black and white. This helped solve some problems with gradient noise in the the grayscale image that couldn't be removed by the blurring, and caused false edges to be added during edge filtering.
+
+Next, an edge filter was applied. There was still a large amount of noise, much of which was due to pins on the ICs or gradient noise in the IC images themselves, so a gaussian filter was applied to the results to blur the edges and "connect" various edge points to one another. Each edge blur was applied independent of the other (that is to say that the vertical and horizontal edges were blurred before being combined together).
 
 ### Performance Evaluation.
 
