@@ -60,6 +60,8 @@ After the clustering step, the image was turned to black and white. This helped 
 
 Next, an edge filter was applied. There was still a large amount of noise, much of which was due to pins on the ICs or gradient noise in the IC images themselves, so a gaussian filter was applied to the results to blur the edges and "connect" various edge points to one another. Each edge blur was applied independent of the other (that is to say that the vertical and horizontal edges were blurred before being combined together).
 
+In the next step, horizontal and vertical lines were extracted from the horizontal and vertical edge planes. A line was considered a series of 30 or more consecutive edge pixels. These horizontal and vertical lines were combined into a single image.
+
 ### Performance Evaluation.
 
 
