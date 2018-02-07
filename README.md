@@ -67,4 +67,6 @@ Finally, our horizontal and vertical edges were combined into a single image and
 
 ### Performance Evaluation.
 
+Our algorithm worked very well on images 1-4, and with varying success on the other images. Image 5 was generally difficult as the image was very low quality and had a lot of gradient in the IC. Even with very aggressive blurring it was very hard to extract a single IC from this image. Image 8 was also difficult as there seemed to be some sort of strange tint in this image that made it difficult to find edges or apply a proper color filter.
 
+For images 6, 7, and 9, the algorithm found a good deal of the ICs, but with a large number of false positives. Many of this false positives would be difficult to filter out in general as the look like ICs (black paint on capacitors, black transitors, etc).
