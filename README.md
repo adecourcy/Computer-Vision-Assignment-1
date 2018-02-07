@@ -85,4 +85,4 @@ Here are some examples of our results:
 ##### Image 9:
 ![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part2/detect_9.png)
 
-Our detect.cpp outputs 3 items (as requested by the assignment): "edges.png", "detected.png" and "detected.txt"
+Our detect.cpp outputs 3 items per image (as requested by the assignment): "edges.png", "detected.png" and "detected.txt"
