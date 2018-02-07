@@ -907,6 +907,9 @@ int main(int argc, char *argv[])
     }
   }
 
+  // output the result of the edge detector (deliverable #1)
+  SImageIO::write_png_file("edges.png", combined_edges, combined_edges, combined_edges);
+  
   // Apply a gaussing blur to our found edges
   filtered_vert = convolve_general(filtered_vert, gaussian_7_7);
   filtered_horz = convolve_general(filtered_horz, gaussian_7_7);
@@ -919,9 +922,11 @@ int main(int argc, char *argv[])
   vector<DetectedBox> detected_boxes =
       flood_fill_cluster(all_lines);
 
-  write_detection_image(output_filename.c_str(),
+  // visualization of which ICs were detected (deliverable #2)
+  write_detection_image("detected.png",
                         detected_boxes,
                         gray_plane);
   
-  
+  // text file with detection results (deliverable #3) 
+  write_detection_txt("detected.txt", detected_boxes);
 }
