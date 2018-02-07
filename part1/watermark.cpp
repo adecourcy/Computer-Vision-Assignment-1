@@ -3,9 +3,8 @@
 //
 // Based on skeleton code by D. Crandall, Spring 2018
 //
-// PUT YOUR NAMES HERE
-//
-//
+// Katherine Spoon
+// Alex DeCourcy
 
 //Link to the header file
 #include <ctime>
@@ -19,13 +18,7 @@
 
 using namespace std;
 
-// This code requires that input be a *square* image, and that each dimension
-//  is a power of 2; i.e. that input.width() == input.height() == 2^k, where k
-//  is an integer. You'll need to pad out your image (with 0's) first if it's
-//  not a square image to begin with. (Padding with 0's has no effect on the FT!)
-//
 // Forward FFT transform: take input image, and return real and imaginary parts.
-//
 void fft(const SDoublePlane &input, SDoublePlane &fft_real, SDoublePlane &fft_imag)
 {
   fft_real = input;
@@ -34,11 +27,8 @@ void fft(const SDoublePlane &input, SDoublePlane &fft_real, SDoublePlane &fft_im
   FFT_2D(1, fft_real, fft_imag);
 }
 
-
-
 // Inverse FFT transform: take real and imaginary parts of fourier transform, and return
-//  real-valued image.
-//
+// real-valued image.
 void ifft(const SDoublePlane &input_real, const SDoublePlane &input_imag, SDoublePlane &output_real)
 {
   output_real = input_real;
@@ -47,8 +37,10 @@ void ifft(const SDoublePlane &input_real, const SDoublePlane &input_imag, SDoubl
   FFT_2D(0, output_real, output_imag);
 }
 
-
-
+//  This code requires that input be a *square* image, and that each dimension
+//  is a power of 2; i.e. that input.width() == input.height() == 2^k, where k
+//  is an integer. This function pads out the image (with 0's) first if it's
+//  not a square image to begin with. (Padding with 0's has no effect on the FT!)
 SDoublePlane create_padded_image(const SDoublePlane &image)
 {
   int numRows = image.rows();
@@ -60,6 +52,7 @@ SDoublePlane create_padded_image(const SDoublePlane &image)
   } else if (numCols > numRows) {
     numRows = numCols;
   }
+  
   // adjust image size to be a power of 2
   int adjusted_size = (int) pow(2, ceil(log2(numRows)));
   numRows = numCols = adjusted_size;
@@ -79,12 +72,9 @@ SDoublePlane create_padded_image(const SDoublePlane &image)
   }
 
   return paddedImage;
-
 }
 
-
-
-// Write this in Part 1.1
+// (Part 1.1) Computes the log of magnitude at each frequency to create the spectrogram
 SDoublePlane fft_magnitude(const SDoublePlane &fft_real, const SDoublePlane &fft_imag)
 {
   SDoublePlane magnitude_matrix(fft_real.rows(), fft_real.cols());
@@ -100,9 +90,8 @@ SDoublePlane fft_magnitude(const SDoublePlane &fft_real, const SDoublePlane &fft
   return magnitude_matrix;
 }
 
-
-
-// Write this in Part 1.2
+// (Part 1.2) Removes interference (noise) from image noise1.png
+// This was hard-coded for this particular example
 SDoublePlane remove_interference(const SDoublePlane &input)
 {
   SDoublePlane fft_real(input.rows(), input.cols());
@@ -196,15 +185,13 @@ SDoublePlane remove_interference(const SDoublePlane &input)
   fft_imag[354][354] = fft_imag[355][354];
   fft_imag[354][355] = fft_imag[355][355];
 
-
   SDoublePlane cleaned_image(input.rows(), input.cols());
   ifft(fft_real, fft_imag, cleaned_image);
 
   return cleaned_image;
 }
 
-
-
+// get the modified coordinates (helper for adding watermark)
 int** get_modified_coordinates(const SDoublePlane &input,
                                int vector_length,
                                int radius)
@@ -229,7 +216,6 @@ int** get_modified_coordinates(const SDoublePlane &input,
   for (int i = 0; i < 2 * vector_length; i++) {
     modified_coordinates[i] = (int*) malloc(sizeof(int) * 2);
   }
-
   
   // We'll just truncate the values
   for (int coord = 0; coord < vector_length; coord++) {
@@ -243,7 +229,6 @@ int** get_modified_coordinates(const SDoublePlane &input,
                sin(M_PI * ((float) (coord + 1) /
                            (float) vector_length)));
                            
-
     modified_coordinates[coord + vector_length][0] = 
         (int) (center_row + radius *
                cos(M_PI + (M_PI * ((float) (coord + 1) /
@@ -251,18 +236,14 @@ int** get_modified_coordinates(const SDoublePlane &input,
     modified_coordinates[coord + vector_length][1] =
         (int) (center_col + radius *
                sin(M_PI + (M_PI * ((float) (coord + 1) /
-                                   (float) vector_length))));
-
-                                   
+                                   (float) vector_length))));                                   
   }
 
   return modified_coordinates;
-
 }
 
-
-
-// Write this in Part 1.3 -- add watermark N to image
+// (Part 1.3) Add watermark N to image
+// Follows the algorithm defined in the PDF assignment instructions
 SDoublePlane mark_image(const SDoublePlane &input,
                         int N,
                         int vector_length,
@@ -301,16 +282,13 @@ SDoublePlane mark_image(const SDoublePlane &input,
     fft_real[mod_x][mod_y] *= (multiplication_constant * binary_vector[coord]);
   }
 
-
   // Transform back to normal coordinates
   ifft(fft_real, fft_imag, wm_image);
 
   return wm_image;
-
 }
 
-
-// Write this in Part 1.3 -- check if watermark N is in image
+// (Part 1.3) Check if watermark N is in image
 void check_image(const SDoublePlane &input,
                  int N,
                  int vector_length,
@@ -369,7 +347,6 @@ void check_image(const SDoublePlane &input,
 
   float mean_binary_values = (sum / (float) vector_length);
 
-
   // Calculate Pearson numerator and denominators
   float numerator = 0;
   float denom_mod_values = 0;
@@ -397,10 +374,7 @@ void check_image(const SDoublePlane &input,
   } else {
     printf("Image does not have watermark\n");
   }
-
 }
-
-
 
 int main(int argc, char **argv)
 {
@@ -419,9 +393,6 @@ int main(int argc, char **argv)
     
     SDoublePlane input_image = SImageIO::read_png_file(inputFile.c_str());
     SDoublePlane padded_image = create_padded_image(input_image);
- 
-
-    //const char * outString = outputFile.c_str();
     
     if(part == "1.1") {
       SDoublePlane fft_real(input_image.rows(), input_image.cols());
@@ -443,9 +414,9 @@ int main(int argc, char **argv)
                                noise_removed);
     } else if(part == "1.3") {
       int vector_length = 5;
-      int radius = 100;
-      int multiplication_constant = 1; // alpha constant in PDF
-      float r_check = 0.3; // R value cutoff for Pearson correlation, "t" in PDF
+      int radius = 40;
+      int multiplication_constant = 2;    // alpha constant in PDF
+      float r_check = 0.5;                // R value cutoff for Pearson correlation, "t" in PDF
       
       if(argc < 6) {
         cout << "Need 6 parameters for watermark part:" << endl;
