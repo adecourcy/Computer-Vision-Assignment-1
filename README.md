@@ -44,8 +44,16 @@ To test the false positive rate of our parameters, we embedded the watermark "35
 ## Part 2
 ### How to Run
 
+./detect input_image output_image
+
 ### Design Decisions
 
-### Performance Evaluation
+We deviated quite a bit from the suggestions in the PDF in this assignment. We found that using a simple blur and edge filter alone resulting in images that were extremely noisy and very difficult to use. We attempted to use very conservative and very aggressive blurring, with gaussians with a deviation of 3, 5, 7, 9, and mean filters of size 3, 5, 7, and 11, however this didn't seem to drastically improve our results with the edge filter. We even tried doing various forms of edge filters, making them smaller and larger but, again, the improvement wasn't very great. That's not to say that there was no improvement at all, just that it brought the noise level from very bad to pretty bad.
+
+We were asked on Piazza to compare our method to the suggested method in the PDF, however we found that it would have taken a very large amount of work to get results from the suggested PDF method and it was very obvious that those results would be very poor. As we had already spent a large amount of time trying to improve the results through the use of different blurs and edge filters, we decided to finish the project using our modified method and only report those results here.I
+
+We started by importing the image as a color image. We applied an aggressive blur to each color plane though the use of a mean filter. We then passed these color planes to a function that filtered out any pixel that wasn't "gray" enough given some parameters. This was a very conservative filter, erring on the side of leaving too much noise behind rather than than accidentally removing some signal from that noise. This color filter returned a grayscale image of the remaining pixels.
+
+### Performance Evaluation.
 
 
