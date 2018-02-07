@@ -60,7 +60,10 @@ After the clustering step, the image was turned to black and white. This helped 
 
 Next, an edge filter was applied. There was still a large amount of noise, much of which was due to pins on the ICs or gradient noise in the IC images themselves, so a gaussian filter was applied to the results to blur the edges and "connect" various edge points to one another. Each edge blur was applied independent of the other (that is to say that the vertical and horizontal edges were blurred before being combined together).
 
-In the next step, horizontal and vertical lines were extracted from the horizontal and vertical edge planes. A line was considered a series of 30 or more consecutive edge pixels. These horizontal and vertical lines were combined into a single image.
+In the next step, horizontal and vertical lines were extracted from the horizontal and vertical edge planes. A line was considered a series of 30 or more consecutive edge pixels. When a line was found it was extended from both by ends by 10%. The reason for this was that noise often caused parts of the edges to be left out during the edge-filtering process and some of the ICs had non-right angle corners. Some of these issues were taken care of in the edge-blurring process, but not all of them. This step cause broken lines to be re-joined and itersections to be found.
+
+Finally, our horizontal and vertical edges were combined into a single image and, for the empty (non-line) space in our images, a flood fill algorithm was used to find clusters enclosed by the lines. Each cluster was evaluated to see if it was "box"-like enough (based on the filled spaces in the enclosed aread), if it was small and large enough to be considered an IC, and if the proportion of the sides was within certain parameters.
+
 
 ### Performance Evaluation.
 
