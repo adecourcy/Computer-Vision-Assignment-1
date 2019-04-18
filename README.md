@@ -20,23 +20,23 @@ For 1.2, we hard-coded the removal of the noise (allowable by the assignment), b
 For 1.3, below is a summary (both qualitative and quantitative) of the parameters (**l**, **r**, **alpha** and **t**) we chose.  
 #### Qualitative Results (Example Images)
 ##### Original Image (Tree):
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_original.png)
+![alt text](part1/watermark_images/tree_watermark_original.png)
 
 ##### For high value of l:
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_high_l_value.png)
+![alt text](part1/watermark_images/tree_watermark_high_l_value.png)
 
 ##### For low value of r:
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_low_r_value.png)
+![alt text](part1/watermark_images/tree_watermark_low_r_value.png)
 
 ##### For high value of alpha:
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/tree_watermark_high_alpha_value.png)
+![alt text](part1/watermark_images/tree_watermark_high_alpha_value.png)
 
 One other important assumption that we make with this specific set of parameters is that the png images that are used do not have transparent backgrounds. See an example below.
 ##### Original Image (person - with transparent background):
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/people.png)
+![alt text](part1/watermark_images/people.png)
 
 ##### For set of parameters above (l = 5, r = 40, alpha = 2, t = 0.5):
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part1/watermark_images/people_watermark.png)
+![alt text](part1/watermark_images/people_watermark.png)
 
 #### Quantitative Results 
 To test the false positive rate of our parameters, we embedded the watermark "35" into the tree image above using the "add" operation, then tested all integers 1-100 with the "check" operation. We had 7 false positives (16, 21, 40, 43, 49, 86, and 100), resulting in a false positive rate of 7%.
@@ -77,12 +77,12 @@ Finally, it should be mentioned that we didn't have a great way of measuring the
 
 Here are some examples of our results:
 ##### Image 2:
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part2/detect_2.png)
+![alt text](part2/detect_2.png)
 
 ##### Image 3:
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part2/detect_3.png)
+![alt text](part2/detect_3.png)
 
 ##### Image 9:
-![alt text](https://github.iu.edu/cs-b657-sp2018/adecourc-kspoon-a1/blob/master/part2/detect_9.png)
+![alt text](part2/detect_9.png)
 
 Our detect.cpp outputs 3 items per image (as requested by the assignment): "edges.png", "detected.png" and "detected.txt"
