@@ -4,6 +4,8 @@
 This was a class project. In this project, I designed and implemented an algorithm to identify integrated circuts. Certain constraints about methods that were acceptable to complete this task were given. Further, grading was competitive, and based off positive identification (true positives) with no regards to runtime (as long as it wasn't extremely slow). The algorithm used was based off these constraints.
 
 The code for this algorithm can be found in the "part 2" folder. I have removed the portion of the readme that my partner, Katie Spoon, worked on.
+
+Examples of results can be found at the bottom of the readme.
   
 ## Part 2
 ### How to Run
